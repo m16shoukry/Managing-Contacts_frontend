@@ -21,7 +21,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
-import { environment } from '../../../../environments/environment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-contacts',
@@ -42,7 +42,7 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './contacts.component.scss',
 })
 export class ContactsComponent implements OnInit, OnDestroy {
-  contacts!: any[];
+  contacts: any[] = [];
   currentPage: number = 1;
   totalPages: number = 1;
   pageSize: number = 5;
@@ -52,7 +52,7 @@ export class ContactsComponent implements OnInit, OnDestroy {
   addContactForm!: FormGroup;
   isAddContactModalOpen = false;
   contactLockStatus: { [key: string]: boolean } = {};
-  eventSource!: EventSource;
+  lockStatusSubscription!: Subscription;
 
   private errorHandlerService = inject(ErrorHandlerService);
   private toastr = inject(ToastrService);
@@ -65,7 +65,12 @@ export class ContactsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadContacts();
 
-    this.setupEventSource();
+    this.lockStatusSubscription = this.contactService
+      .getLockStatusUpdates()
+      .subscribe((data: any) => {
+        const { contactId, lockedBy, lockedUntil } = data;
+        this.contactLockStatus[contactId] = lockedUntil !== null;
+      });
 
     this.filtersForm = this.formBuilder.group({
       name: [''],
@@ -83,6 +88,8 @@ export class ContactsComponent implements OnInit, OnDestroy {
       address: ['', Validators.required],
       notes: [''],
     });
+
+    this.contactService.startContactLockSSE();
   }
 
   openAddContactModal() {
@@ -136,22 +143,6 @@ export class ContactsComponent implements OnInit, OnDestroy {
     });
   }
 
-  setupEventSource(): void {
-    this.eventSource = new EventSource(
-      `${environment.remoteServiceBaseUrl}/contacts/contact-locks`
-    );
-    this.eventSource.onmessage = (event: MessageEvent) => {
-      const data = JSON.parse(event.data);
-      console.log(event);
-      const { contactId, lockedBy, lockedUntil } = data;
-      this.contactLockStatus[contactId] = lockedUntil !== null;
-    };
-
-    this.eventSource.onerror = (error: any) => {
-      console.error('Error receiving SSE:', error);
-    };
-  }
-
   lockContact(contactId: string): void {
     this.contactService.lockContact(contactId).subscribe(() => {
       this.contactLockStatus[contactId] = true;
@@ -173,8 +164,9 @@ export class ContactsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.eventSource) {
-      this.eventSource.close();
+    if (this.lockStatusSubscription) {
+      this.lockStatusSubscription.unsubscribe();
     }
+    this.contactService.stopContactLockSSE();
   }
 }
