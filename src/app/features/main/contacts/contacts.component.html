@@ -1,0 +1,192 @@
+<app-header />
+<div class="contacts-grid">
+  <div class="add-contact">
+    <button (click)="openAddContactModal()" class="btn btn-primary">
+      Add Contact
+    </button>
+  </div>
+
+  <form [formGroup]="filtersForm" class="filters">
+    <input formControlName="name" placeholder="Filter by Name" />
+    <input formControlName="phone" placeholder="Filter by Phone" />
+    <input formControlName="address" placeholder="Filter by Address" />
+  </form>
+
+  <div class="contacts-list">
+    <div
+      class="d-flex justify-content-center"
+      *ngIf="!contacts || contacts.length === 0"
+    >
+      Empty Data...
+    </div>
+    <div
+      class="contact-card"
+      *ngFor="
+        let contact of contacts
+          | paginate
+            : {
+                id: 'server',
+                itemsPerPage: pageSize,
+                currentPage: currentPage,
+                totalItems: totalItems,
+              }
+      "
+    >
+      <div class="contact-details">
+        <h4 *ngIf="!isEditing[contact._id]">{{ contact.name }}</h4>
+        <label *ngIf="isEditing[contact._id]" for="Name">Name</label>
+        <input
+          *ngIf="isEditing[contact._id]"
+          [(ngModel)]="contact.name"
+          placeholder="Name"
+        />
+
+        <p *ngIf="!isEditing[contact._id]">
+          <strong>Phone:</strong> {{ contact.phone }}
+        </p>
+        <label *ngIf="isEditing[contact._id]" for="Phone">Phone</label>
+
+        <input
+          *ngIf="isEditing[contact._id]"
+          [(ngModel)]="contact.phone"
+          placeholder="Phone"
+        />
+
+        <p *ngIf="!isEditing[contact._id]">
+          <strong>Address:</strong> {{ contact.address }}
+        </p>
+        <label *ngIf="isEditing[contact._id]" for="Phone">Phone</label>
+        <input
+          *ngIf="isEditing[contact._id]"
+          [(ngModel)]="contact.address"
+          placeholder="Address"
+        />
+
+        <p *ngIf="!isEditing[contact._id]">
+          <strong>Notes:</strong> {{ contact.notes }}
+        </p>
+        <label *ngIf="isEditing[contact._id]" for="Phone">Phone</label>
+        <input
+          *ngIf="isEditing[contact._id]"
+          [(ngModel)]="contact.notes"
+          placeholder="Notes"
+        />
+
+        <div
+          *ngIf="
+            (contactLockStatus[contact._id] && !isEditing[contact._id]) ||
+            contact.lockedUntil
+          "
+        >
+          <span class="text-black">this contact is updating...</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button
+          *ngIf="!isEditing[contact._id]"
+          (click)="editContact(contact._id)"
+          class="btn btn-outline-primary"
+          [disabled]="contactLockStatus[contact._id] || contact.lockedUntil"
+        >
+          Edit
+        </button>
+        <button
+          *ngIf="isEditing[contact._id]"
+          (click)="saveContact(contact)"
+          class="btn btn-success"
+        >
+          Save
+        </button>
+        <button
+          *ngIf="!isEditing[contact._id]"
+          (click)="deleteContact(contact._id)"
+          class="btn btn-danger"
+          [disabled]="contactLockStatus[contact._id]"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <pagination-controls
+    class="pagination-bar"
+    id="server"
+    (pageChange)="onPageChange($event)"
+    [autoHide]="true"
+    [maxSize]="6"
+    [responsive]="true"
+  ></pagination-controls>
+
+  <div
+    class="modal"
+    *ngIf="isAddContactModalOpen"
+    (click)="closeAddContactModal($event)"
+  >
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Add New Contact</h3>
+      <form [formGroup]="addContactForm" (ngSubmit)="submitAddContactForm()">
+        <label>
+          Name:
+          <input formControlName="name" placeholder="Enter Name" />
+          <div
+            *ngIf="
+              addContactForm.get('name')?.invalid &&
+              addContactForm.get('name')?.touched
+            "
+          >
+            Name is required.
+          </div>
+        </label>
+        <label>
+          Phone:
+          <input formControlName="phone" placeholder="Enter Phone" />
+          <div
+            *ngIf="
+              addContactForm.get('phone')?.invalid &&
+              addContactForm.get('phone')?.touched
+            "
+          >
+            Phone is required.
+          </div>
+        </label>
+        <label>
+          Address:
+          <input formControlName="address" placeholder="Enter Address" />
+          <div
+            *ngIf="
+              addContactForm.get('address')?.invalid &&
+              addContactForm.get('address')?.touched
+            "
+          >
+            Address is required.
+          </div>
+        </label>
+        <label>
+          Notes:
+          <textarea
+            formControlName="notes"
+            placeholder="Additional Notes"
+          ></textarea>
+        </label>
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeAddContactModal($event)"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="addContactForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

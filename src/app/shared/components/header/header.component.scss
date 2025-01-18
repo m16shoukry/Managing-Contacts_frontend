@@ -1,0 +1,34 @@
+@import "../../../../assets/styles/variables";
+
+nav {
+  background: $baseColor;
+  box-shadow: 0px -10px 30px 0px rgba(0, 0, 0, 0.25);
+}
+.container-fluid {
+  margin: 0rem 10rem;
+}
+@media only screen and (max-width: 768px) {
+  .container-fluid {
+    margin: 0rem 2rem;
+  }
+}
+
+.dropdown-menu {
+  max-height: fit-content;
+}
+.dropdown-menu.show {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  width: 17rem;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: $baseColor;
+  box-shadow: 0px 4px 30px -12px rgba(0, 0, 0, 0.15);
+
+  .dropdown-item {
+    display: flex !important;
+    padding: 0.5rem 0;
+  }
+}

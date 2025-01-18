@@ -1,0 +1,90 @@
+<section class="text-center text-lg-start">
+  <div class="row g-0 justify-content-around">
+    <div class="col-lg-7">
+      <div class="d-flex justify-content-center py-4">
+        <div class="form-content">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="pt-4">
+            <div class="form-group mb-4">
+              <label class="poppins-medium mb-2" for="userName">
+                User name
+              </label>
+              <input
+                type="text"
+                id="userName"
+                formControlName="userName"
+                class="form-control userName py-2 rounded-3"
+                placeholder="Enter your username"
+                [ngClass]="{
+                  'is-invalid':
+                    loginForm.controls['userName'].touched &&
+                    loginForm.controls['userName'].invalid
+                }"
+              />
+              <div
+                *ngIf="
+                  loginForm.controls['userName'].touched &&
+                  loginForm.controls['userName'].invalid
+                "
+                class="invalid-feedback"
+              >
+                <span
+                  *ngIf="loginForm.controls['userName'].errors?.['required']"
+                  >username is required</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group mb-2">
+              <label class="poppins-medium mb-2" for="password">Password</label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  id="password"
+                  formControlName="password"
+                  class="form-control py-2 rounded-3 input-pass"
+                  placeholder="Enter your password"
+                  [ngClass]="{
+                    'is-invalid':
+                      loginForm.controls['password'].touched &&
+                      loginForm.controls['password'].invalid
+                  }"
+                />
+                <button
+                  type="button"
+                  class="btn btn-eye"
+                  (click)="togglePasswordVisibility('password')"
+                >
+                  <i
+                    class="bi"
+                    [ngClass]="passwordVisible ? 'bi-eye' : 'bi-eye-slash'"
+                  ></i>
+                </button>
+                <div
+                  *ngIf="
+                    loginForm.controls['password'].touched &&
+                    loginForm.controls['password'].invalid
+                  "
+                  class="invalid-feedback"
+                >
+                  <span
+                    *ngIf="loginForm.controls['password'].errors?.['required']"
+                    >Password is required</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-login w-100 mb-4 rounded-3"
+              [disabled]="loginForm.invalid"
+              [ngClass]="{ 'btn-disabled': loginForm.invalid }"
+            >
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

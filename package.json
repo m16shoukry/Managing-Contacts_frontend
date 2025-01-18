@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:Managing-Contact_frontend": "node dist/managing-contact-frontend/server/server.mjs"
+    "serve:ssr:Managing-Contact_frontend": "node dist/managing-contact-frontend/server/main.js"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +21,13 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.9",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "express": "^4.18.2",
+    "moment": "^2.30.1",
+    "ngx-bootstrap": "^18.1.2",
+    "ngx-pagination": "^6.0.3",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"

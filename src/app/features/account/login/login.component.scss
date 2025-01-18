@@ -1,0 +1,36 @@
+@import "../../../../assets/styles/variables";
+
+.form-content {
+  width: 30rem;
+  padding-top: 10rem;
+}
+
+.primary-text {
+  color: $primaryColor;
+}
+.btn-login {
+  background-color: $primaryColor;
+  color: $baseColor;
+  padding: 0.55rem !important;
+  &:hover {
+    border-color: $primaryColor !important;
+    background-color: $baseColor !important;
+    color: $primaryColor !important;
+  }
+  &.btn-disabled {
+    background-color: $primaryColor !important;
+    color: $baseColor !important;
+    opacity: 90%;
+  }
+}
+.account-text {
+  color: $textColor;
+}
+.input-pass {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.btn-eye {
+  border-color: $borderColor;
+  border-left: none !important;
+}

@@ -1,0 +1,54 @@
+<nav class="navbar sticky-top poppins-regular cairo-regular">
+  <div class="container-fluid">
+    <div class="navbar-brand" style="width: 50%">
+      <a routerLink="/app/home">
+        <img
+          src="../../../../assets/images/"
+          alt="Logo"
+          class="img-fluid"
+          style="width: 100px"
+        />
+      </a>
+    </div>
+
+    <div class="btn-group" dropdown>
+      <button
+        dropdownToggle
+        type="button"
+        class="btn btn-link"
+        aria-controls="profile-dropdown"
+        aria-expanded="false"
+      >
+        <img
+          [src]="userProfileImage"
+          alt="profileImage"
+          class="rounded-circle img-fluid"
+          style="height: 2.5rem; width: 2.5rem"
+        />
+      </button>
+
+      <ul
+        *dropdownMenu
+        id="profile-dropdown"
+        class="dropdown-menu dropdown-menu-end p-3 text-center"
+        aria-labelledby="profileDropdown"
+      >
+        <li>
+          <img
+            [src]="userProfileImage"
+            alt="profileImage"
+            class="rounded-circle img-fluid"
+          />
+        </li>
+
+        <li><hr class="dropdown-divider" /></li>
+
+        <li>
+          <button class="dropdown-item btn btn-link" (click)="logout()">
+            Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
